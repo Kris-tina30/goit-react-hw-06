@@ -1,7 +1,10 @@
 import React from 'react';
+import { nanoid } from 'nanoid';
+import { useSelector, useDispatch } from 'react-redux';
 import css from './ContactForm.module.css';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { addContact } from '../redux/contactsSlice';
 
 const MAX_CHAR_VALIDATION = 50;
 const MIN_CHAR_VALIDATION = 3;
@@ -29,7 +32,19 @@ const FORM_INITIAL_VALUES = {
   number: '',
 };
 
-function ContactForm({ onAddContact }) {
+function ContactForm() {
+  const contacts = useSelector(state => state.contacts.contacts);
+  const dispatch = useDispatch();
+
+  const onAddContact = formData => {
+    const finalContact = {
+      ...formData,
+      id: nanoid(),
+    };
+
+    dispatch(addContact(finalContact));
+  };
+
   const handleSubmit = (values, actions) => {
     console.log('values: ', values);
     onAddContact(values);
